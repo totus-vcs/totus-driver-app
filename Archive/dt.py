@@ -7,7 +7,6 @@ from time import sleep
 ROOT_ADDRESS = "http://10.0.0.202:5000"
 
 def send_to_api(address: str, value: bool): 
-    
     api_url = ROOT_ADDRESS + address
     print("Sending:", value, "TO:", api_url)
     data = { "value": value }

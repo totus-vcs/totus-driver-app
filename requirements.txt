@@ -1,0 +1,5 @@
+requests
+pygame
+customtkinter
+Pillow
+opencv-python

@@ -5,6 +5,7 @@ import requests
 from time import sleep
 
 ROOT_ADDRESS = "http://10.0.0.202:5000"
+ROUND_VALUE = 1
 
 def send_to_api(address: str, value: bool): 
     api_url = ROOT_ADDRESS + address
@@ -12,6 +13,9 @@ def send_to_api(address: str, value: bool):
     data = { "value": value }
     response = requests.put(api_url, json=data)
     sleep(0.01)
+    return None
+ 
+### Initialize ###
 
 pygame.init()
 clock = pygame.time.Clock()
@@ -29,6 +33,8 @@ i = 0;
 brake = 0.0
 accellerator = 0.0
 steering = 0.0
+
+## For Every Update on Gaming Controller ##
 
 while True:
 
@@ -52,18 +58,24 @@ while True:
                 if event.axis == 1:
                     if event.value > 0:
                         
-                        #  BRAKE
+                        ###  BRAKE ###
                         print("brake", event.value)
+                        value_to_send = event.value
+                        value_to_send = round(value_to_send, ROUND_VALUE)
+                        print('brake value: ' , value_to_send)
+                        if value_to_send != accellerator: 
+                            send_to_api("/brake/controller_location", value_to_send)
+                            accellerator = value_to_send
                         
                         
                     if event.value < 0:
                         
-                        # ACCEL
-                        print("accel", event.value)
-                        
+                        ### ACCELLERATOR ###
+                        # print("accel", event.value)
                         value_to_send = event.value
-                        value_to_send = round(value_to_send, 1)
-                        print(value_to_send)
+                        value_to_send = round(value_to_send, ROUND_VALUE)
+                        value_to_send = -1 * value_to_send
+                        print('accellerator value: ' , value_to_send)
                         if value_to_send != accellerator: 
                             send_to_api("/accellerator/controller_location", value_to_send)
                             accellerator = value_to_send
@@ -71,8 +83,14 @@ while True:
                         
                 if event.axis == 0:
                     
-                    # STEERING
-                    print("steering", event.value)
+                    ### STEERING ###
+                    value_to_send = event.value
+                    value_to_send = round(value_to_send, ROUND_VALUE)
+                    value_to_send = value_to_send
+                    print('steering value: ' , value_to_send)
+                    if value_to_send != accellerator: 
+                        send_to_api("/steering/controller_location", value_to_send)
+                        accellerator = value_to_send
             
                             
         # # DISCONNECT ETC
